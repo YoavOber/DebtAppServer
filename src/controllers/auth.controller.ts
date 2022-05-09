@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import DBResponse from "../models/DBResponse.model";
-import { register, login } from "../repository/userRepository";
+import { register, login, jwtLogin } from "../repository/userRepository";
 
 class authController {
-  constructor() {}
-
   async register(req: Request, res: Response) {
     try {
       const body = req.body;
@@ -24,11 +22,18 @@ class authController {
       const username: string = body["username"];
       const password: string = body["password"];
       await login(username, password)
-        .then((v: DBResponse) => res.status(200).send(v))
+        .then((v: DBResponse) => res.status(v.success ? 200 : 400).send(v.data))
         .catch((err: Error) => res.status(400).send(err.message));
     } catch (error) {
       res.status(500).send(error);
     }
+  }
+
+  async loginToken(req: Request, res: Response) {
+    const token: string = req.params.token;
+    const verified: Boolean = await jwtLogin(token);
+    if (verified) return res.status(200).send("OK");
+    return res.status(404).send("User not found");
   }
 }
 
