@@ -1,14 +1,7 @@
 import DBResponse from "../models/DBResponse.model";
-import { User } from "../schemas/userSchema.mongo";
-import { sign, verify } from "jsonwebtoken";
-import { IUser } from "../interfaces/IUser.interface";
-
-const getUserJWT = (user: IUser) => {
-  const payload = {
-    id: user.id,
-  };
-  return sign(payload, process.env.JWT_SECRET!);
-};
+import { User } from "../database/schemas/user.schema";
+import { verify } from "jsonwebtoken";
+import { IUserDocument } from "../database/types/IUser.interface";
 
 const getPayload = (token: string) => {
   const verified = <any>verify(token, process.env.JWT_SECRET!);
@@ -21,20 +14,21 @@ const getPayload = (token: string) => {
 const register = async (username: string, email: string, password: string): Promise<DBResponse> => {
   const emailExists = await User.findOne({ email: email });
   if (emailExists != null) return new DBResponse(false, "מייל כבר קיים במערכת");
-  const user: IUser = new User({ username: username, email: email, password: password });
+  const user: IUserDocument = new User({ username: username, email: email, password: password });
   return await user
     .save()
-    .then((u) => new DBResponse(true, getUserJWT(u)))
-    .catch((err) => new DBResponse(false, err.message));
+    .then((u: IUserDocument) => new DBResponse(true, u.getToken()))
+    .catch((err: Error) => new DBResponse(false, err.message));
 };
 
 //return jwt with user data if user exists
 //else return error data
 const login = async (username: string, password: string): Promise<DBResponse> => {
-  const user: IUser | null = await User.findOne({ username: username });
-  if (!user) return new DBResponse(false, "משתמש לא נמצא");
-  if (user.password != password) return new DBResponse(false, "סיסמא שגויה");
-  return new DBResponse(true, getUserJWT(user));
+  const user: IUserDocument | null = await User.findOne({ username: username });
+  if (user == null) return new DBResponse(false, "משתמש לא נמצא");
+
+  const passCorrect: boolean = await user.validateHash(password);
+  return new DBResponse(passCorrect, passCorrect ? user.getToken() : "סיסמא שגויה");
 };
 
 const jwtLogin = async (token: string): Promise<Boolean> => {

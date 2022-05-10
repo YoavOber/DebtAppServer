@@ -1,8 +1,9 @@
-import { Model, model, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 import { hash, compare } from "bcrypt";
-import { IUser } from "../interfaces/IUser.interface";
+import { IUserDocument } from "../types/IUser.interface";
+import { sign } from "jsonwebtoken";
 
-const userSchema = new Schema<IUser, IUserInstanceCreation, IUser>({
+const userSchema = new Schema({
   username: { type: String, required: true },
   email: { type: String, required: true },
   password: {
@@ -24,6 +25,11 @@ userSchema.methods.validateHash = async function (hash: string) {
   return await compare(this.password, hash);
 };
 
-interface IUserInstanceCreation extends Model<IUser> {}
+userSchema.methods.getToken = function () {
+  const payload = {
+    id: this.id,
+  };
+  return sign(payload, process.env.JWT_SECRET!);
+};
 
-export const User = model("User", userSchema);
+export default userSchema;

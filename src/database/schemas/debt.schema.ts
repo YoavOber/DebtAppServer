@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IDebt } from "../interfaces/IDebt.interface";
+import { IDebt } from "../types/IDebt.interface";
 
 const debtSchema = new Schema({
   amount: { type: Number, required: true },
