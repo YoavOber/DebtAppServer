@@ -1,7 +1,7 @@
-import { model, Schema } from "mongoose";
-import { hash, compare } from "bcrypt";
-import { IUserDocument } from "../types/IUser.interface";
+import { Schema } from "mongoose";
+import { hash, compare, genSalt } from "bcrypt";
 import { sign } from "jsonwebtoken";
+import { IUserDocument } from "../types/IUser.interface";
 
 const userSchema = new Schema({
   username: { type: String, required: true },
@@ -16,13 +16,14 @@ const userSchema = new Schema({
 });
 
 userSchema.pre("save", async function (next: Function) {
-  const user = this;
-  if (user.isModified("password")) user.password = await hash(user.password, 8);
+  const user: IUserDocument = this;
+  if (user.isModified("password")) user.password = await hash(user.password, 0);
   next();
 });
 
-userSchema.methods.validateHash = async function (hash: string) {
-  return await compare(this.password, hash);
+userSchema.methods.validatePassword = async function (password: string) {
+  const result = await compare(password, this.password);
+  return result;
 };
 
 userSchema.methods.getToken = function () {

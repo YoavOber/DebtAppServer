@@ -1,7 +1,7 @@
 import DBResponse from "../models/DBResponse.model";
-import { User } from "../database/schemas/user.schema";
 import { verify } from "jsonwebtoken";
 import { IUserDocument } from "../database/types/IUser.interface";
+import { User } from "../database/models/user.model";
 
 const getPayload = (token: string) => {
   const verified = <any>verify(token, process.env.JWT_SECRET!);
@@ -12,8 +12,8 @@ const getPayload = (token: string) => {
 //return jwt with user data if succuess
 //else return error message
 const register = async (username: string, email: string, password: string): Promise<DBResponse> => {
-  const emailExists = await User.findOne({ email: email });
-  if (emailExists != null) return new DBResponse(false, "מייל כבר קיים במערכת");
+  const usernameExists = await User.findOne({ username: username });
+  if (usernameExists != null) return new DBResponse(false, "שם משתמש כבר קיים במערכת");
   const user: IUserDocument = new User({ username: username, email: email, password: password });
   return await user
     .save()
@@ -27,15 +27,14 @@ const login = async (username: string, password: string): Promise<DBResponse> =>
   const user: IUserDocument | null = await User.findOne({ username: username });
   if (user == null) return new DBResponse(false, "משתמש לא נמצא");
 
-  const passCorrect: boolean = await user.validateHash(password);
+  const passCorrect: boolean = await user.validatePassword(password);
   return new DBResponse(passCorrect, passCorrect ? user.getToken() : "סיסמא שגויה");
 };
 
 const jwtLogin = async (token: string): Promise<Boolean> => {
   const uid = getPayload(token);
   const user = await User.findById(uid);
-  if (user) return true;
-  return false;
+  return user != null;
 };
 
 export { register, login, jwtLogin };

@@ -6,7 +6,7 @@ export interface IUser {
 }
 
 export interface IUserDocument extends IUser, Document {
-  validateHash: (this: IUserDocument, password: string) => Promise<boolean>;
+  validatePassword: (this: IUserDocument, password: string) => Promise<boolean>;
   getToken: (this: IUserDocument) => string;
 }
 export interface IUserModel extends Model<IUserDocument> {}
