@@ -42,9 +42,11 @@ const login = async (username: string, password: string): Promise<DBResponse> =>
 
 const jwtLogin = async (token: string): Promise<DBResponse> => {
   const verified = <any>verify(token, process.env.JWT_SECRET!);
-  console.log(verified);
-  const user = await User.findById(verified.id || "");
-  if (user == null) return new DBResponse(false, "invalid token");
+  if (verified.id == null) return new DBResponse(false, "invalid token");
+
+  const user = await User.findById(verified.id);
+
+  if (user == null) return new DBResponse(false, "user not found");
   return new DBResponse(true, {
     username: user.username,
     email: user.email,

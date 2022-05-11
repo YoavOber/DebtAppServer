@@ -1,6 +1,7 @@
 import { Debt } from "../database/models/debt.model";
 import { IDebtDocument } from "../database/types/IDebt.interface";
 import DBResponse from "../models/DBResponse.model";
+import { Date } from "mongoose";
 
 const create = async (
   amount: number,
@@ -11,11 +12,13 @@ const create = async (
 ): Promise<DBResponse> => {
   const debt = new Debt({
     amount: amount,
-    date: Date,
+    date: date,
     creditors: creditors,
     debitors: debitors,
     reason: reason,
   });
+  console.log("repo date", debt);
+
   const result = await debt
     .save()
     .then((d: IDebtDocument) => new DBResponse(true, d.toJSON()))
