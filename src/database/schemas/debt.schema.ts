@@ -1,5 +1,4 @@
-import { model, Schema } from "mongoose";
-import { IDebt } from "../types/IDebt.interface";
+import { Schema } from "mongoose";
 
 const debtSchema = new Schema({
   amount: { type: Number, required: true },
@@ -9,4 +8,4 @@ const debtSchema = new Schema({
   reason: { type: String, required: true },
 });
 
-export const Debt = model<IDebt>("Debt", debtSchema);
+export default debtSchema;

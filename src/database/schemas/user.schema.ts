@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { hash, compare, genSalt } from "bcrypt";
+import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { IUserDocument } from "../types/IUser.interface";
 
@@ -26,7 +26,7 @@ userSchema.methods.validatePassword = async function (password: string) {
   return result;
 };
 
-userSchema.methods.getToken = function () {
+userSchema.methods.getAccessToken = function () {
   const payload = {
     id: this.id,
   };

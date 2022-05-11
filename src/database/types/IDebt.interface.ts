@@ -1,9 +1,11 @@
 import { Date, Document } from "mongoose";
 
-export interface IDebt extends Document {
+export interface IDebt {
   amount: number;
   date: Date;
-  creditors: [];
-  debitors: [];
+  creditors: string[];
+  debitors: string[];
   reason: string;
 }
+
+export interface IDebtDocument extends IDebt, Document {}

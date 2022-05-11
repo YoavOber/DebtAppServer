@@ -1,14 +1,20 @@
 import e from "express";
 import { authRouter } from "./routers/auth.router";
-import { debtsRouter } from "./routers/debts.router";
-import { init } from "./services/mongoose.service";
+import { debtRouter } from "./routers/debts.router";
+import { init as mongoInit } from "./services/mongoose.service";
 
 const app: e.Express = e();
-require("dotenv").config();
-init();
-app.use(e.json());
-app.use("/auth", authRouter);
-app.use(debtsRouter);
+
+const initApp = (app: e.Express) => {
+  require("dotenv").config();
+  mongoInit();
+  app.use(e.json());
+  app.use("/auth", authRouter);
+  app.use("/debt", debtRouter);
+};
+
+initApp(app);
+
 app.listen(3000, () => {
   return console.log(`Express is listening at http://localhost:${3000}`);
 });

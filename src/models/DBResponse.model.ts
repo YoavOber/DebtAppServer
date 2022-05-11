@@ -1,3 +1,4 @@
+//respresents response from database
 class DBResponse {
   success: boolean;
   data: any;

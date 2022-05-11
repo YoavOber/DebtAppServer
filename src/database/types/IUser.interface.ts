@@ -7,6 +7,6 @@ export interface IUser {
 
 export interface IUserDocument extends IUser, Document {
   validatePassword: (this: IUserDocument, password: string) => Promise<boolean>;
-  getToken: (this: IUserDocument) => string;
+  getAccessToken: (this: IUserDocument) => string; //get token signed and containing id
 }
 export interface IUserModel extends Model<IUserDocument> {}
