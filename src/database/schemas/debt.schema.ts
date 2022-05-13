@@ -1,11 +1,15 @@
-import mongoose, { Schema } from "mongoose";
+import { Schema } from "mongoose";
 
-const debtSchema = new Schema({
-  amount: { type: Number, required: true },
-  date: { type: mongoose.Schema.Types.Date, required: true },
-  debitors: { type: [], required: true },
-  creditors: { type: [], required: true },
-  reason: { type: String, required: true },
-});
+const debtSchema = new Schema(
+  {
+    amount: { type: Number, required: true },
+    debitors: { type: [], required: true },
+    creditors: { type: [], required: true },
+    reason: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export default debtSchema;
