@@ -11,4 +11,9 @@ router.post(
   async (req: Request, res: Response) => await _controller.createDebt(req, res)
 );
 
+router.delete(
+  "/delete/:id",
+  async (req: Request, res: Response) => await _controller.deleteDebt(req, res)
+);
+
 export { router as debtRouter };
