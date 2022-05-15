@@ -30,9 +30,25 @@ const deleteById = async (id: string): Promise<DBResponse> => {
 };
 
 const getUser = async (id: string, debits: boolean, credits: boolean): Promise<DBResponse> => {
-  // let query = {};
+  const getCreditsQuery = {
+    creditors: {
+      $in: [id],
+    },
+  };
+  const getDebitsQuery = {
+    debitors: {
+      $in: [id],
+    },
+  };
+  let query;
+  if (credits && !debits) query = getCreditsQuery;
+  else if (!credits && debits) query = getDebitsQuery;
+  else query = { $or: [getCreditsQuery, getDebitsQuery] };
 
-  const result = await Debt.find();
+  const result = await Debt.find(query)
+    .then((d: IDebtDocument[] | null) => new DBResponse(true, d))
+    .catch((err: Error) => new DBResponse(false, err.message));
+  return result;
 };
 
 export { create, deleteById, getUser };
