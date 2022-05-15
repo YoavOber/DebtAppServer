@@ -16,4 +16,10 @@ router.delete(
   async (req: Request, res: Response) => await _controller.deleteDebt(req, res)
 );
 
+router.get(
+  "/userdata/:id",
+  async (req: Request, res: Response) => await _controller.getUserData(req, res)
+  //(req: Request, res: Response) => res.status(200).send()
+);
+
 export { router as debtRouter };

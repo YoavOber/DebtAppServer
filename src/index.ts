@@ -3,8 +3,6 @@ import { authRouter } from "./routers/auth.router";
 import { debtRouter } from "./routers/debts.router";
 import { init as mongoInit } from "./services/mongoose.service";
 
-const app: e.Express = e();
-
 const initApp = (app: e.Express) => {
   require("dotenv").config();
   mongoInit();
@@ -13,6 +11,7 @@ const initApp = (app: e.Express) => {
   app.use("/debt", debtRouter);
 };
 
+const app: e.Express = e();
 initApp(app);
 
 app.listen(3000, () => {
