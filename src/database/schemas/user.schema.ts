@@ -26,9 +26,17 @@ userSchema.methods.validatePassword = async function (password: string) {
   return result;
 };
 
-userSchema.methods.getAccessToken = function () {
+userSchema.methods.getUserJWT = function () {
   const payload = {
     id: this.id,
+  };
+  return sign(payload, process.env.JWT_SECRET!);
+};
+
+userSchema.methods.getLoginToken = function () {
+  const payload = {
+    id: this.id,
+    password: this.password,
   };
   return sign(payload, process.env.JWT_SECRET!);
 };

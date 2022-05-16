@@ -2,9 +2,12 @@ import { Request } from "express";
 import { Response } from "express";
 import { Router } from "express";
 import DebtController from "../controllers/debt.controller";
+import { isUser } from "../middlewares/auth.middleware";
 
 const router: Router = Router();
 const _controller = new DebtController();
+
+router.use(isUser);
 
 router.post(
   "/create",
