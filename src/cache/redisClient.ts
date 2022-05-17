@@ -2,13 +2,13 @@ import { RedisClientType, createClient } from "redis";
 
 let redisClient: RedisClientType = createClient();
 
-const initCacheClient = async () => {
+const initCache = async () => {
+  require("./mongoose.extentions");
   await redisClient.connect();
 };
 
 const clearCache = async () => {
-  console.log("cache flushed");
   return await redisClient.flushDb();
 };
 
-export { clearCache, initCacheClient, redisClient };
+export { clearCache, initCache as initCacheClient, redisClient };

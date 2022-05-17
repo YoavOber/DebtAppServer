@@ -1,9 +1,9 @@
 import { Request } from "express";
 import { Response } from "express";
 import { Router } from "express";
-import { clearCache } from "../cache/redisClient";
 import DebtController from "../controllers/debt.controller";
 import { isUser } from "../middlewares/auth";
+import { deleteCache } from "../middlewares/cache";
 
 const router: Router = Router();
 const _controller = new DebtController();
@@ -12,13 +12,13 @@ router.use(isUser);
 
 router.post(
   "/create",
-  clearCache,
+  deleteCache,
   async (req: Request, res: Response) => await _controller.createDebt(req, res)
 );
 
 router.delete(
   "/delete/:id",
-  clearCache,
+  deleteCache,
   async (req: Request, res: Response) => await _controller.deleteDebt(req, res)
 );
 

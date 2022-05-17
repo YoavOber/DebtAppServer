@@ -32,7 +32,7 @@ const deleteById = async (id: string): Promise<DBResponse> => {
 
 const getUser = async (id: string, debits: boolean, credits: boolean): Promise<DBResponse> => {
   if (!credits && !debits)
-    //just in case,shouldnt be here
+    //just in case,shouldn't be here
     return new DBResponse(false, "bad request - no credits or debits are specified");
 
   let filter: FilterQuery<any>;
