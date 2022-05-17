@@ -1,7 +1,8 @@
 import { FilterQuery } from "mongoose";
 import { Debt } from "../database/models/debt.model";
-import { IDebtDocument } from "../database/types/IDebt.interface";
+import { IDebtDocument } from "../database/types/IDebt.t";
 import DBResponse from "../models/DBResponse.model";
+import { extend } from "../cache/cachableMongoose";
 
 const create = async (
   amount: number,
