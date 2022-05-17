@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import { initCacheClient } from "../cache/redisClient";
 
 export const init = () => {
+  initCacheClient();
   mongoose.Promise = global.Promise;
-  console.log(process.env.TEST_MONGO_URL);
   mongoose.connect(process.env.TEST_MONGO_URL || "");
 };

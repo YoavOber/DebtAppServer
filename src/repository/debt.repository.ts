@@ -1,8 +1,7 @@
 import { FilterQuery } from "mongoose";
 import { Debt } from "../database/models/debt.model";
-import { IDebtDocument } from "../database/types/IDebt.t";
+import { IDebtDocument } from "../database/types/IDebt.interface";
 import DBResponse from "../models/DBResponse.model";
-import { extend } from "../cache/cachableMongoose";
 
 const create = async (
   amount: number,
@@ -36,7 +35,7 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
     //just in case,shouldnt be here
     return new DBResponse(false, "bad request - no credits or debits are specified");
 
-  let query: FilterQuery<any>;
+  let filter: FilterQuery<any>;
   const getCreditsQuery: FilterQuery<any> = {
     creditors: {
       $in: [id],
@@ -48,11 +47,12 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
     },
   };
 
-  if (credits && debits) query = { $or: [getCreditsQuery, getDebitsQuery] };
-  else if (credits && !debits) query = getCreditsQuery;
-  else query = getDebitsQuery;
+  if (credits && debits) filter = { $or: [getCreditsQuery, getDebitsQuery] };
+  else if (credits && !debits) filter = getCreditsQuery;
+  else filter = getDebitsQuery;
 
-  const result = await Debt.find(query)
+  const result = Debt.find(filter)
+    .cache()
     .then((d: IDebtDocument[] | null) => new DBResponse(true, d))
     .catch((err: Error) => new DBResponse(false, err.message));
   return result;
