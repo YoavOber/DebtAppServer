@@ -1,5 +1,5 @@
 import { ObjectId } from "mongoose";
-export interface IDebtParticipant {
+export interface IDebtor {
   user: ObjectId;
   amount: number;
 }

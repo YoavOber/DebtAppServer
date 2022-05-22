@@ -1,14 +1,14 @@
 import { Schema } from "mongoose";
-import { IDebtParticipant } from "../types/IDebtParticipant";
-import debtParticipantSchema from "./debtParticipant.schema";
+import { IDebtor } from "../types/IDebtor";
+import debtor from "./debtor.schema";
 
 const debtSchema = new Schema(
   {
     totalAmount: { type: Number, required: true },
     debtors: {
-      type: [debtParticipantSchema],
+      type: [debtor],
       required: true,
-      validate(d: IDebtParticipant[]) {
+      validate(d: IDebtor[]) {
         if (d.length == 0) throw new Error("Must have at least one debtor");
       },
     },

@@ -1,10 +1,10 @@
 import { Document, ObjectId } from "mongoose";
-import { IDebtParticipant } from "./IDebtParticipant";
+import { IDebtor } from "./IDebtor";
 
 export interface IDebt {
   totalAmount: number;
   creditor: ObjectId;
-  debtors: Array<IDebtParticipant>;
+  debtors: Array<IDebtor>;
   reason: string;
 }
 
