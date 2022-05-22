@@ -17,9 +17,8 @@ mongoose.Query.prototype.exec = async function () {
 
   const cachedValue = await redisClient.hGet(this.hashKey, key);
   if (cachedValue) {
-    console.log("serving from cache");
     const doc = JSON.parse(cachedValue);
-    return Array.isArray(doc) ? doc.map((d) => new this.model(d)) : new this.model(doc);
+    return doc instanceof Array ? doc.map((d) => new this.model(d)) : new this.model(doc);
   }
   const result = await exec.apply(this);
   await redisClient.hSet(this.hashKey, key, JSON.stringify(result));

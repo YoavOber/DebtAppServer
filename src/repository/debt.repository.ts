@@ -1,6 +1,6 @@
 import { FilterQuery } from "mongoose";
 import { Debt } from "../database/models/debt.model";
-import { IDebtDocument } from "../database/types/IDebt.interface";
+import { IDebtDocument } from "../database/types/IDebt";
 import DBResponse from "../models/DBResponse.model";
 
 const create = async (
@@ -32,7 +32,6 @@ const deleteById = async (id: string): Promise<DBResponse> => {
 
 const getUser = async (id: string, debits: boolean, credits: boolean): Promise<DBResponse> => {
   if (!credits && !debits)
-    //just in case,shouldn't be here
     return new DBResponse(false, "bad request - no credits or debits are specified");
 
   let filter: FilterQuery<any>;

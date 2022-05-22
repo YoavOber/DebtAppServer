@@ -1,6 +1,6 @@
 import DBResponse from "../models/DBResponse.model";
 import { verify } from "jsonwebtoken";
-import { IUserDocument } from "../database/types/IUser.interface";
+import { IUserDocument } from "../database/types/IUser";
 import { User } from "../database/models/user.model";
 
 //register

@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { IUserDocument } from "../types/IUser.interface";
+import { IUserDocument } from "../types/IUser";
 
 const userSchema = new Schema({
   username: { type: String, required: true },
