@@ -3,22 +3,19 @@ import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { IUserDocument } from "../types/IUser";
 
-const userSchema = new Schema(
-  {
-    username: { type: String, required: true },
-    email: { type: String, required: true },
-    password: {
-      type: String,
-      required: true,
-      validate: (p: String) => {
-        if (p.length < 8) throw new Error("password too short, min 8 characters");
-      },
+const userSchema = new Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true },
+  password: {
+    type: String,
+    required: true,
+    get: (): undefined => undefined,
+    validate: (p: String) => {
+      if (p.length < 8) throw new Error("password too short, min 8 characters");
     },
   },
-  {
-    toJSON: { virtuals: true },
-  }
-);
+});
+userSchema.set("toJSON", { virtuals: true });
 
 userSchema.virtual("credits", {
   ref: "Debt",

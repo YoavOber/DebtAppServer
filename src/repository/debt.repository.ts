@@ -33,19 +33,6 @@ const deleteById = async (id: string): Promise<DBResponse> => {
   return result;
 };
 
-const getUserCredits = async (id: string): Promise<DBResponse> => {
-  try {
-    console.log("here");
-    const user: IUserDocument | null = await User.findById(id);
-    if (user == null) return new DBResponse(false, "User not found-unable to populate credits");
-    console.log(user);
-    await user?.populate("credits");
-    return new DBResponse(true, user.toJSON()["credits"]);
-  } catch (error) {
-    return new DBResponse(false, error);
-  }
-};
-
 //TODO - reimplement
 const getUser = async (id: string, debits: boolean, credits: boolean): Promise<DBResponse> => {
   if (!credits && !debits)
@@ -53,9 +40,7 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
 
   let filter: FilterQuery<any>;
   const getCreditsQuery: FilterQuery<any> = {
-    creditor: {
-      $in: [id],
-    },
+    creditor: id,
   };
   const getDebitsQuery: FilterQuery<any> = {
     debtors: {
@@ -74,4 +59,4 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
   return result;
 };
 
-export { create, deleteById, getUser, getUserCredits };
+export { create, deleteById, getUser };

@@ -10,26 +10,8 @@ const _controller = new DebtController();
 
 router.use(isUser);
 
-router.post(
-  "/create",
-  deleteCache,
-  async (req: Request, res: Response) => await _controller.createDebt(req, res)
-);
-
-router.delete(
-  "/delete/:id",
-  deleteCache,
-  async (req: Request, res: Response) => await _controller.deleteDebt(req, res)
-);
-
-router.get(
-  "/userdata/:id",
-  async (req: Request, res: Response) => await _controller.getUserData(req, res)
-);
-
-router.get(
-  "/credits/:id",
-  async (req: Request, res: Response) => await _controller.getUserCredits(req, res)
-);
+router.post("/create", deleteCache, _controller.createDebt);
+router.delete("/delete/:id", deleteCache, _controller.deleteDebt);
+router.get("/userdata/:id", _controller.getUserData);
 
 export { router as debtRouter };
