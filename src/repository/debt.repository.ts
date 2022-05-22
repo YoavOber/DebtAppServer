@@ -1,4 +1,4 @@
-import { FilterQuery } from "mongoose";
+import { FilterQuery, ObjectId } from "mongoose";
 import { Debt } from "../database/models/debt.model";
 import { IDebtDocument } from "../database/types/IDebt";
 import DBResponse from "../database/models/DBResponse";
@@ -6,14 +6,14 @@ import { IDebtParticipant } from "../database/types/IDebtParticipant";
 
 const create = async (
   totalAmount: number,
-  creditors: IDebtParticipant[],
-  debitors: IDebtParticipant[],
+  creditor: ObjectId,
+  debtors: IDebtParticipant[],
   reason: string
 ): Promise<DBResponse> => {
   const debt = new Debt({
     totalAmount: totalAmount,
-    creditors: creditors,
-    debitors: debitors,
+    creditor: creditor,
+    debtors: debtors,
     reason: reason,
   });
 
@@ -31,18 +31,19 @@ const deleteById = async (id: string): Promise<DBResponse> => {
   return result;
 };
 
+//TODO - reimplement
 const getUser = async (id: string, debits: boolean, credits: boolean): Promise<DBResponse> => {
   if (!credits && !debits)
     return new DBResponse(false, "bad request - no credits or debits are specified");
 
   let filter: FilterQuery<any>;
   const getCreditsQuery: FilterQuery<any> = {
-    creditors: {
+    creditor: {
       $in: [id],
     },
   };
   const getDebitsQuery: FilterQuery<any> = {
-    debitors: {
+    debtors: {
       $in: [id],
     },
   };

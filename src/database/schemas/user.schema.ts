@@ -15,6 +15,19 @@ const userSchema = new Schema({
   },
 });
 
+userSchema.virtual("credits", {
+  ref: "Debt",
+  localField: "_id",
+  foreignField: "creditor",
+});
+
+// userSchema.virtual('debits',{
+//   ref:'Debt',
+//   localField:'_id',
+//   foreignField:'debitors',
+//   match:
+// });
+
 userSchema.pre("save", async function (next: Function) {
   const user: IUserDocument = this;
   if (user.isModified("password")) user.password = await hash(user.password, 0);
