@@ -2,14 +2,12 @@ import { FilterQuery, ObjectId } from "mongoose";
 import { Debt } from "../database/models/debt.model";
 import { IDebtDocument } from "../database/types/IDebt";
 import DBResponse from "../database/models/DBResponse";
-import { IDebtParticipant } from "../database/types/IDebtParticipant";
-import { User } from "../database/models/user.model";
-import { IUserDocument } from "../database/types/IUser";
+import { IDebtor } from "../database/types/IDebtor";
 
 const create = async (
   totalAmount: number,
   creditor: ObjectId,
-  debtors: IDebtParticipant[],
+  debtors: IDebtor[],
   reason: string
 ): Promise<DBResponse> => {
   const debt = new Debt({
@@ -44,7 +42,7 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
   };
   const getDebitsQuery: FilterQuery<any> = {
     debtors: {
-      $in: [id],
+      $match: [id],
     },
   };
 
@@ -52,7 +50,11 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
   else if (credits && !debits) filter = getCreditsQuery;
   else filter = getDebitsQuery;
 
-  const result = Debt.find(filter)
+  const result = await Debt.find(filter)
+    // .populate({
+    //   path: "debtors.user",
+    //   model: "User",
+    // })
     .cache()
     .then((d: IDebtDocument[] | null) => new DBResponse(true, d))
     .catch((err: Error) => new DBResponse(false, err.message));
