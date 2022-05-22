@@ -3,6 +3,8 @@ import { Debt } from "../database/models/debt.model";
 import { IDebtDocument } from "../database/types/IDebt";
 import DBResponse from "../database/models/DBResponse";
 import { IDebtParticipant } from "../database/types/IDebtParticipant";
+import { User } from "../database/models/user.model";
+import { IUserDocument } from "../database/types/IUser";
 
 const create = async (
   totalAmount: number,
@@ -29,6 +31,19 @@ const deleteById = async (id: string): Promise<DBResponse> => {
     .then((d: IDebtDocument | null) => new DBResponse(true, d))
     .catch((err: Error) => new DBResponse(false, err.message));
   return result;
+};
+
+const getUserCredits = async (id: string): Promise<DBResponse> => {
+  try {
+    console.log("here");
+    const user: IUserDocument | null = await User.findById(id);
+    if (user == null) return new DBResponse(false, "User not found-unable to populate credits");
+    console.log(user);
+    await user?.populate("credits");
+    return new DBResponse(true, user.toJSON()["credits"]);
+  } catch (error) {
+    return new DBResponse(false, error);
+  }
 };
 
 //TODO - reimplement
@@ -59,4 +74,4 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
   return result;
 };
 
-export { create, deleteById, getUser };
+export { create, deleteById, getUser, getUserCredits };

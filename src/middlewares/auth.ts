@@ -16,7 +16,7 @@ export const isUser = async (
     if (verified.id == null) return res.status(401).send("invalid token");
 
     const user = await userExists(verified.id);
-    if (!user) return res.status(404).send("user doesn't exist");
+    if (!user) return res.status(401).send("user doesn't exist");
 
     next();
   } catch (error) {

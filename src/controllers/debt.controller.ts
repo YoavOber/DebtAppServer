@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { create, deleteById, getUser } from "../repository/debt.repository";
+import { create, deleteById, getUser, getUserCredits } from "../repository/debt.repository";
 class DebtController {
   async createDebt(req: Request, res: Response) {
     try {
@@ -7,6 +7,17 @@ class DebtController {
       const result = await create(amount, creditor, debtors, reason);
       return res.status(result.success ? 200 : 400).send(result.data);
     } catch (error: Error | any) {
+      const errMsg: string = error instanceof Error ? error.message : String(error);
+      return res.status(500).send(errMsg);
+    }
+  }
+
+  async getUserCredits(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const result = await getUserCredits(id);
+      return res.status(result.success ? 200 : 400).send(result.data);
+    } catch (error) {
       const errMsg: string = error instanceof Error ? error.message : String(error);
       return res.status(500).send(errMsg);
     }
