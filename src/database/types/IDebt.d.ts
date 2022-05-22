@@ -1,9 +1,10 @@
 import { Document } from "mongoose";
+import { IDebtParticipant } from "./IDebtParticipant";
 
 export interface IDebt {
-  amount: number;
-  creditors: string[];
-  debitors: string[];
+  totalAmount: number;
+  creditors: Array<IDebtParticipant>;
+  debitors: Array<IDebtParticipant>;
   reason: string;
 }
 

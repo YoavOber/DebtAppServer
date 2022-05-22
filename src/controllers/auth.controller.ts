@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import DBResponse from "../models/DBResponse.model";
+import DBResponse from "../database/models/DBResponse";
 import { register, login, jwtLogin } from "../repository/user.repository";
 
 class authController {

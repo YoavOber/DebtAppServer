@@ -2,6 +2,8 @@ import { ObjectId } from "mongoose";
 
 export interface IDebtParticipant {
   username: string;
-  uid: ObjectId;
+  userID: ObjectId;
   amount: number;
 }
+
+// export interface IDebtParticipantDocument extends IDebtParticipant, Document {}

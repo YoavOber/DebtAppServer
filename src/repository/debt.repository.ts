@@ -1,16 +1,17 @@
 import { FilterQuery } from "mongoose";
 import { Debt } from "../database/models/debt.model";
 import { IDebtDocument } from "../database/types/IDebt";
-import DBResponse from "../models/DBResponse.model";
+import DBResponse from "../database/models/DBResponse";
+import { IDebtParticipant } from "../database/types/IDebtParticipant";
 
 const create = async (
-  amount: number,
-  creditors: string[],
-  debitors: string[],
+  totalAmount: number,
+  creditors: IDebtParticipant[],
+  debitors: IDebtParticipant[],
   reason: string
 ): Promise<DBResponse> => {
   const debt = new Debt({
-    amount: amount,
+    totalAmount: totalAmount,
     creditors: creditors,
     debitors: debitors,
     reason: reason,

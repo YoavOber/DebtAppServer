@@ -1,4 +1,4 @@
-import DBResponse from "../models/DBResponse.model";
+import DBResponse from "../database/models/DBResponse";
 import { verify } from "jsonwebtoken";
 import { IUserDocument } from "../database/types/IUser";
 import { User } from "../database/models/user.model";

@@ -1,10 +1,11 @@
 import { Schema } from "mongoose";
+import debtParticipantSchema from "./debtParticipant.schema";
 
 const debtSchema = new Schema(
   {
-    amount: { type: Number, required: true },
-    debitors: { type: [], required: true },
-    creditors: { type: [], required: true },
+    totalAmount: { type: Number, required: true },
+    debitors: { type: [debtParticipantSchema], required: true },
+    creditors: { type: [debtParticipantSchema], required: true },
     reason: { type: String, required: true },
   },
   {
