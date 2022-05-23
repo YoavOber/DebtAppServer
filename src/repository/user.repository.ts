@@ -20,7 +20,10 @@ const register = async (username: string, email: string, password: string): Prom
       };
       return new DBResponse(true, data);
     })
-    .catch((err: Error) => new DBResponse(false, err.message));
+    .catch((err: Error) => {
+      console.log(err);
+      return new DBResponse(false, err.message);
+    });
 
   return result;
 };

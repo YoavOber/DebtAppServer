@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
 import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
+import { Schema } from "mongoose";
 import { IUserDocument } from "../types/IUser";
 
 const userSchema = new Schema({
@@ -25,12 +25,15 @@ userSchema.virtual("credits", {
 
 userSchema.pre("save", async function (next: Function) {
   const user: IUserDocument = this;
-  if (user.isModified("password")) user.password = await hash(user.password, 0);
+  if (user.isModified("password")) {
+    const _hash = await hash(user.toJSON()["password"], 0);
+    user.password = _hash;
+  }
   next();
 });
 
 userSchema.methods.validatePassword = async function (password: string) {
-  const result = await compare(password, this.password);
+  const result = await compare(password, this.toJSON()["password"]);
   return result;
 };
 

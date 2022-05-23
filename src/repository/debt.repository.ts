@@ -1,8 +1,9 @@
-import { FilterQuery, ObjectId } from "mongoose";
+import { FilterQuery, ObjectId, Types } from "mongoose";
 import { Debt } from "../database/models/debt.model";
 import { IDebtDocument } from "../database/types/IDebt";
 import DBResponse from "../database/models/DBResponse";
 import { IDebtor } from "../database/types/IDebtor";
+import { User } from "../database/models/user.model";
 
 const create = async (
   totalAmount: number,
@@ -37,12 +38,13 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
     return new DBResponse(false, "bad request - no credits or debits are specified");
 
   let filter: FilterQuery<any>;
+  const _objId = new Types.ObjectId(id);
   const getCreditsQuery: FilterQuery<any> = {
-    creditor: id,
+    creditor: _objId,
   };
   const getDebitsQuery: FilterQuery<any> = {
     debtors: {
-      $match: [id],
+      $in: [_objId],
     },
   };
 
@@ -50,11 +52,7 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
   else if (credits && !debits) filter = getCreditsQuery;
   else filter = getDebitsQuery;
 
-  const result = await Debt.find(filter)
-    // .populate({
-    //   path: "debtors.user",
-    //   model: "User",
-    // })
+  const result = Debt.find(filter)
     .cache()
     .then((d: IDebtDocument[] | null) => new DBResponse(true, d))
     .catch((err: Error) => new DBResponse(false, err.message));
