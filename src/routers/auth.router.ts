@@ -4,8 +4,8 @@ import authController from "../controllers/auth.controller";
 const router: Router = Router();
 const _controller = new authController(); //TODO - inject!
 
-router.post("/register", async (req, res) => await _controller.register(req, res));
-router.post("/login", async (req, res) => await _controller.login(req, res));
-router.post("/login/:token", async (req, res) => await _controller.loginToken(req, res));
+router.post("/register", _controller.register);
+router.post("/login", _controller.login);
+router.post("/login/:token", _controller.loginToken);
 
 export { router as authRouter };
