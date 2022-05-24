@@ -31,13 +31,7 @@ class DebtController {
       const uid = req.params.id;
       const { debits, credits } = req.query;
 
-      let getDebits: boolean = debits == "true";
-      let getCredits: boolean = credits == "true";
-      if (!getCredits && !getDebits) {
-        getCredits = getDebits = true;
-      }
-
-      const result = await getUser(uid, getDebits, getCredits);
+      const result = await getUser(uid, debits != "false", credits != "false");
       return res.status(result.success ? 200 : 400).send(result.data);
     } catch (error: Error | any) {
       const errMsg: string = error instanceof Error ? error.message : String(error);

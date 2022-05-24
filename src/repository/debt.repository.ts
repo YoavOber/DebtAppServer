@@ -3,7 +3,7 @@ import { Debt } from "../database/models/debt.model";
 import { IDebtDocument } from "../database/types/IDebt";
 import DBResponse from "../database/models/DBResponse";
 import { IDebtor } from "../database/types/IDebtor";
-import { User } from "../database/models/user.model";
+import { IUserDocument } from "../database/types/IUser";
 
 const create = async (
   totalAmount: number,
@@ -38,13 +38,14 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
     return new DBResponse(false, "bad request - no credits or debits are specified");
 
   let filter: FilterQuery<any>;
-  const _objId = new Types.ObjectId(id);
   const getCreditsQuery: FilterQuery<any> = {
-    creditor: _objId,
+    "creditor.uid": {
+      $in: [id],
+    },
   };
   const getDebitsQuery: FilterQuery<any> = {
-    debtors: {
-      $in: [_objId],
+    "debtors.uid": {
+      $in: [id],
     },
   };
 
@@ -52,11 +53,26 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
   else if (credits && !debits) filter = getCreditsQuery;
   else filter = getDebitsQuery;
 
-  const result = Debt.find(filter)
-    .cache()
-    .then((d: IDebtDocument[] | null) => new DBResponse(true, d))
-    .catch((err: Error) => new DBResponse(false, err.message));
-  return result;
+  const data = await Debt.find(filter);
+  return await Promise.all(
+    data.map(async (e) => {
+      await e.populate<{ creditor: IUserDocument }>("creditor");
+    })
+  ).then(() => new DBResponse(true, data));
+
+  // .then((d: IDebtDocument[] | null) => {
+  //   d?.forEach(async (el) => {
+  //     console.log("b4 populating ", el);
+  //     const res = await el.populate("creditor").then((r) => {
+  //       console.log("after", r);
+  //       return r;
+  //     });
+  //     return res;
+  //   });
+  //   return new DBResponse(true, d);
+  // })
+  // .catch((err: Error) => new DBResponse(false, err.message));
+  //  return result;
 };
 
 export { create, deleteById, getUser };

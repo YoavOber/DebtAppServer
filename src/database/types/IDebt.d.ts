@@ -1,9 +1,10 @@
 import { Document, ObjectId } from "mongoose";
+import { ICreditor } from "./ICreditor";
 import { IDebtor } from "./IDebtor";
 
 export interface IDebt {
   totalAmount: number;
-  creditor: ObjectId;
+  creditor: ICreditor;
   debtors: Array<IDebtor>;
   reason: string;
 }

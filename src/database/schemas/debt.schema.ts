@@ -1,5 +1,7 @@
 import { Schema } from "mongoose";
+import { User } from "../models/user.model";
 import { IDebtor } from "../types/IDebtor";
+import { Creditor } from "../types/ICreditor";
 
 const debtSchema = new Schema(
   {
@@ -11,7 +13,7 @@ const debtSchema = new Schema(
         if (d.length == 0) throw new Error("Must have at least one debtor");
       },
     },
-    creditor: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    creditor: { type: Creditor, ref: User, required: true },
     reason: { type: String, required: true },
   },
   {
