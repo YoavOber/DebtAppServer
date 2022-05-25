@@ -1,27 +1,35 @@
-import { FilterQuery, ObjectId, Types } from "mongoose";
-import { Debt } from "../database/models/debt.model";
+import { FilterQuery } from "mongoose";
 import { IDebtDocument } from "../database/types/IDebt";
 import DBResponse from "../database/models/DBResponse";
 import { IDebtor } from "../database/types/IDebtor";
-import { IUserDocument } from "../database/types/IUser";
+import { ICreditor } from "../database/types/ICreditor";
+import { Creditor, Debtor, Debt } from "../database/models/models";
 
 const create = async (
   totalAmount: number,
-  creditor: ObjectId,
+  creditor: ICreditor,
   debtors: IDebtor[],
   reason: string
 ): Promise<DBResponse> => {
+  let _creditor: ICreditor = new Creditor({ uid: creditor.uid, username: creditor.username });
+  let _debtorsArr: IDebtor[] = debtors.map(
+    (e) => new Debtor({ amount: e.amount, uid: e.uid, username: e.username })
+  );
+
   const debt = new Debt({
     totalAmount: totalAmount,
-    creditor: creditor,
-    debtors: debtors,
+    creditor: _creditor,
+    debtors: _debtorsArr,
     reason: reason,
   });
 
   const result = await debt
     .save()
     .then((d: IDebtDocument) => new DBResponse(true, d))
-    .catch((err: Error) => new DBResponse(false, err.message));
+    .catch((err: Error) => {
+      console.log(err);
+      return new DBResponse(false, err.message);
+    });
   return result;
 };
 
@@ -32,16 +40,13 @@ const deleteById = async (id: string): Promise<DBResponse> => {
   return result;
 };
 
-//TODO - reimplement
 const getUser = async (id: string, debits: boolean, credits: boolean): Promise<DBResponse> => {
   if (!credits && !debits)
     return new DBResponse(false, "bad request - no credits or debits are specified");
 
   let filter: FilterQuery<any>;
   const getCreditsQuery: FilterQuery<any> = {
-    "creditor.uid": {
-      $in: [id],
-    },
+    "creditor.uid": id,
   };
   const getDebitsQuery: FilterQuery<any> = {
     "debtors.uid": {
@@ -49,30 +54,16 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
     },
   };
 
+  console.log(getCreditsQuery, getDebitsQuery);
+
   if (credits && debits) filter = { $or: [getCreditsQuery, getDebitsQuery] };
   else if (credits && !debits) filter = getCreditsQuery;
   else filter = getDebitsQuery;
 
-  const data = await Debt.find(filter);
-  return await Promise.all(
-    data.map(async (e) => {
-      await e.populate<{ creditor: IUserDocument }>("creditor");
-    })
-  ).then(() => new DBResponse(true, data));
-
-  // .then((d: IDebtDocument[] | null) => {
-  //   d?.forEach(async (el) => {
-  //     console.log("b4 populating ", el);
-  //     const res = await el.populate("creditor").then((r) => {
-  //       console.log("after", r);
-  //       return r;
-  //     });
-  //     return res;
-  //   });
-  //   return new DBResponse(true, d);
-  // })
-  // .catch((err: Error) => new DBResponse(false, err.message));
-  //  return result;
+  const result = await Debt.find(filter)
+    .then((d: IDebtDocument[] | null) => new DBResponse(true, d))
+    .catch((err: Error) => new DBResponse(false, err.message));
+  return result;
 };
 
 export { create, deleteById, getUser };

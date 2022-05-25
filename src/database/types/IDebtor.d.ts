@@ -1,6 +1,6 @@
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
 export interface IDebtor {
-  uid: ObjectId;
+  uid: String; //Types.ObjectId;
   username: string;
   amount: number;
 }

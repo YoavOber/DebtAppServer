@@ -1,7 +1,7 @@
 import DBResponse from "../database/models/DBResponse";
 import { verify } from "jsonwebtoken";
 import { IUserDocument } from "../database/types/IUser";
-import { User } from "../database/models/user.model";
+import { User } from "../database/models/models";
 
 //register
 //return jwt with user data if succuess

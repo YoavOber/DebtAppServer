@@ -1,8 +1,8 @@
 import { Schema } from "mongoose";
 import { userExists } from "../../repository/user.repository";
-import { IDebtor } from "../types/IDebtor";
+import { ICreditor } from "../types/ICreditor";
 
-export const debtorSchema = new Schema<IDebtor>(
+export const creditorSchema = new Schema<ICreditor>(
   {
     uid: {
       type: String,
@@ -13,7 +13,6 @@ export const debtorSchema = new Schema<IDebtor>(
       },
     },
     username: { type: String, required: true },
-    amount: { type: Number, required: true },
   },
   { _id: false }
 );

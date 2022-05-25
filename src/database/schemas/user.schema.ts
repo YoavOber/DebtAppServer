@@ -15,13 +15,6 @@ const userSchema = new Schema({
     },
   },
 });
-userSchema.set("toJSON", { virtuals: true });
-
-userSchema.virtual("credits", {
-  ref: "Debt",
-  localField: "_id",
-  foreignField: "creditor",
-});
 
 userSchema.pre("save", async function (next: Function) {
   const user: IUserDocument = this;

@@ -1,7 +1,5 @@
-import { ObjectId } from "mongoose";
-interface ICreditor {
-  uid: ObjectId;
+import { Types } from "mongoose";
+export interface ICreditor {
+  uid: String; //Types.ObjectId;
   username: string;
 }
-
-export class Creditor implements ICreditor {}
