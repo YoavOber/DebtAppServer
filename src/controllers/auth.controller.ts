@@ -5,13 +5,13 @@ import { register, login, jwtLogin } from "../repository/user.repository";
 class authController {
   async register(req: Request, res: Response) {
     const { username, email, password } = req.body;
-    const dbResponse: DBResponse = await register(username, email, password);
-    return res.status(dbResponse.success ? 200 : 400).send(dbResponse.data);
+    const result: DBResponse = await register(username, email, password);
+    return res.status(result.success ? 200 : 400).send(result.data);
   }
 
   async login(req: Request, res: Response) {
     const { username, password } = req.body;
-    const result = await login(username, password);
+    const result: DBResponse = await login(username, password);
     return res.status(result.success ? 200 : 404).send(result.data);
   }
 

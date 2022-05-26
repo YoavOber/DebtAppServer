@@ -20,10 +20,7 @@ const register = async (username: string, email: string, password: string): Prom
       };
       return new DBResponse(true, data);
     })
-    .catch((err: Error) => {
-      console.log(err);
-      return new DBResponse(false, err.message);
-    });
+    .catch((err: Error) => new DBResponse(false, err.message));
 
   return result;
 };
@@ -59,6 +56,8 @@ const jwtLogin = async (token: string): Promise<DBResponse> => {
   const data = {
     jwt: user.getUserJWT(),
     loginToken: user.getLoginToken(),
+    uid: user.id,
+    username: user.username,
   };
   return new DBResponse(true, data);
 };
