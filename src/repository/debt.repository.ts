@@ -47,8 +47,6 @@ const getUser = async (id: string, debits: boolean, credits: boolean): Promise<D
     },
   };
 
-  console.log(getCreditsQuery, getDebitsQuery);
-
   if (credits && debits) filter = { $or: [getCreditsQuery, getDebitsQuery] };
   else if (credits && !debits) filter = getCreditsQuery;
   else filter = getDebitsQuery;

@@ -10,13 +10,15 @@ const _controller = new DebtController();
 if (process.env.ENV == "prod") router.use(isUser);
 
 router.post("/create", deleteCache, (req: Request, res: Response) =>
-  wrapAndCatch(async () => await _controller.createDebt(req, res), res)
+  wrapAndCatch(_controller.createDebt, req, res)
 );
+
 router.delete("/delete/:id", deleteCache, (req: Request, res: Response) =>
-  wrapAndCatch(async () => await _controller.deleteDebt(req, res), res)
+  wrapAndCatch(_controller.deleteDebt, req, res)
 );
+
 router.get("/userdata/:id", (req: Request, res: Response) =>
-  wrapAndCatch(async () => await _controller.getUserData(req, res), res)
+  wrapAndCatch(_controller.getUserData, req, res)
 );
 
 export { router as debtRouter };

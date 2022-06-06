@@ -6,13 +6,13 @@ const router: Router = Router();
 const _controller = new authController();
 
 router.post("/register", (req: Request, res: Response) =>
-  wrapAndCatch(async () => await _controller.register(req, res), res)
+  wrapAndCatch(_controller.register, req, res)
 );
-router.post("/login", (req: Request, res: Response) =>
-  wrapAndCatch(async () => await _controller.login(req, res), res)
-);
+
+router.post("/login", (req: Request, res: Response) => wrapAndCatch(_controller.login, req, res));
+
 router.post("/login/:token", (req: Request, res: Response) =>
-  wrapAndCatch(async () => await _controller.loginToken(req, res), res)
+  wrapAndCatch(_controller.loginToken, req, res)
 );
 
 export { router as authRouter };
