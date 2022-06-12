@@ -18,6 +18,7 @@ export const isUser = async (
     const user = await userExists(verified.id);
     if (!user) return res.status(401).send("user doesn't exist");
 
+    req.body.user = verified.id;
     next();
   } catch (error) {
     const errMsg: string = error instanceof Error ? error.message : String(error);

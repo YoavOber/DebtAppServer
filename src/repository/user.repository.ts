@@ -18,7 +18,7 @@ const register = async (username: string, email: string, password: string): Prom
         jwt: u.getUserJWT(),
         loginToken: u.getLoginToken(),
       };
-      return new DBResponse(true, data);
+      return new DBResponse(true, JSON.stringify(data));
     })
     .catch((err: Error) => new DBResponse(false, err.message));
 
@@ -37,8 +37,10 @@ const login = async (username: string, password: string): Promise<DBResponse> =>
   const data = {
     jwt: user.getUserJWT(),
     loginToken: user.getLoginToken(),
+    uid: user.id,
+    username: user.username,
   };
-  return new DBResponse(true, data);
+  return new DBResponse(true, JSON.stringify(data));
 };
 
 const userExists = async (id: string): Promise<boolean> => {
@@ -59,7 +61,23 @@ const jwtLogin = async (token: string): Promise<DBResponse> => {
     uid: user.id,
     username: user.username,
   };
-  return new DBResponse(true, data);
+  return new DBResponse(true, JSON.stringify(data));
 };
 
-export { register, login, jwtLogin, userExists };
+const getFriends = async (uid: String) => {
+  const friends: IUserDocument[] = await User.find();
+
+  return new DBResponse(
+    true,
+    JSON.stringify(
+      friends.map((f: IUserDocument) => {
+        return JSON.stringify({
+          uid: f.id,
+          username: f.username,
+        });
+      })
+    )
+  );
+};
+
+export { register, login, jwtLogin, userExists, getFriends };
